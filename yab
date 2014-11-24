@@ -3,7 +3,7 @@
 
 option = ARGV[0]
 
-LIST = "list"
+LIST = "resource/list"
 
 def enlist()
 	File.open(LIST, "r").each_line { |l|
@@ -27,7 +27,11 @@ when "add"
 when "list"
   enlist
 when "play"
-  lines = File.open(LIST, "r").each_line.to_a 
+  file = LIST
+  if ARGV.size > 1
+    file = ARGV[1]
+  end
+  lines = File.open(file, "r").each_line.to_a 
   require 'launchy'
 	Launchy.open(lines[0].strip) 
   f = File.open(LIST,"w")
