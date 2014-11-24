@@ -5,10 +5,25 @@ option = ARGV[0]
 
 LIST = "resource/list"
 
-def enlist()
-	File.open(LIST, "r").each_line { |l|
+def enlist(file)
+	File.open(file, "r").each_line { |l|
 			puts l
 	}
+end
+
+def getFile(op)
+  i = 1
+  puts op
+  case op
+  when "add"
+    i = 2
+  when "play"
+  end
+	file = LIST
+  if ARGV.size > i 
+  file = "resource/"+ARGV[i]
+  end
+  file
 end
 
 case option
@@ -20,18 +35,17 @@ when "-h"
   puts "./yab play  ... play the first of the bookmark list (then the link"
   puts "                played located at the last of the entire stack"
 when "add"  
-  f = File.open(LIST, "a")
+  f = File.open(getFile("add"), "a")
   f.puts ARGV[1]
   f.close
-  enlist
 when "list"
-  enlist
-when "play"
-  file = LIST
-  if ARGV.size > 1
-    file = ARGV[1]
+  op = "resource/list"
+  if ARGV.size > 1 
+    op = "resource/#{ARGV[1]}"
   end
-  lines = File.open(file, "r").each_line.to_a 
+  enlist(op)
+when "play"
+  lines = File.open(getFile("play"), "r").each_line.to_a 
   require 'launchy'
 	Launchy.open(lines[0].strip) 
   f = File.open(LIST,"w")
