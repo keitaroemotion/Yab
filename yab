@@ -23,6 +23,10 @@ def getFile(op)
   if ARGV.size > i 
   file = "resource/"+ARGV[i]
   end
+  if (File.file?(file) == false)
+   f = File.new file, "w"
+   f.close
+  end
   file
 end
 
@@ -45,10 +49,11 @@ when "list"
   end
   enlist(op)
 when "play"
-  lines = File.open(getFile("play"), "r").each_line.to_a 
+  file = getFile("play")
+  lines = File.open(file, "r").each_line.to_a 
   require 'launchy'
 	Launchy.open(lines[0].strip) 
-  f = File.open(LIST,"w")
+  f = File.open(file, "w")
   lines[1..-1].push(lines[0]).each { |l| 
     f.puts l
   } 
