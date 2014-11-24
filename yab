@@ -30,6 +30,14 @@ def getFile(op)
   file
 end
 
+def getOp()
+	op = "resource/list"
+	if ARGV.size > 1 
+		op = "resource/#{ARGV[1]}"
+	end
+  op
+end
+
 case option
 when "-h"
   puts "========== YOUR AUTO BROWSER =========== "
@@ -43,10 +51,11 @@ when "add"
   f.puts ARGV[1]
   f.close
 when "list"
-  op = "resource/list"
-  if ARGV.size > 1 
-    op = "resource/#{ARGV[1]}"
-  end
+  #op = "resource/list"
+  #if ARGV.size > 1 
+  #  op = "resource/#{ARGV[1]}"
+  #end
+  op = getOp
   enlist(op)
 when "play"
   file = getFile("play")
@@ -58,6 +67,12 @@ when "play"
     f.puts l
   } 
   f.close
+when "select"
+	file = "resource/#{ARGV[1]}"
+	arr = File.open(file, "r").each_line.to_a 
+	i = ARGV[2].to_i
+	require 'launchy'
+	Launchy.open(arr[i].strip) 
 end
  
 
