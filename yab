@@ -132,6 +132,8 @@ when "select"
   arr = file_to_array file
   i = ARGV[2].to_i
   Launchy.open(arr[i].strip)
+else
+  abort "your command #{option} does not exist."
 end
 
 
