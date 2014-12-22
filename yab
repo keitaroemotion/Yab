@@ -5,6 +5,7 @@ option = ARGV[0]
 $rscroot = "/usr/local/yab/resource"
 
 require 'fileutils'
+require 'launchy'
 FileUtils.mkdir_p $rscroot
 
 LIST = "#{$rscroot}/list"
@@ -15,17 +16,30 @@ def enlist(file)
 	}
 end
 
+$stack = "stack3323gohalmumbaijapancase2004nasha"
+
+def file_to_array(file)
+    f = File.open(file, "r")
+    arr = f.each_line.to_a
+    f.close
+    arr
+end
+
 def getFile(op)
+  file = LIST
   i = 1
   case op
+  when "push" #actual bookmarkin for poping by keywords
+    file = "#{$rscroot}/#{$stack}"
   when "add"
     i = 2
   when "play"
   end
-	file = LIST
-  if ARGV.size > i
-  file = "#{$rscroot}/"+ARGV[i]
+
+  if (ARGV.size > i) && (op != "push")
+    file = "#{$rscroot}/"+ARGV[i]
   end
+
   if (File.file?(file) == false)
    f = File.new file, "w"
    f.close
@@ -45,33 +59,79 @@ case option
 when "-h"
   puts "========== YOUR AUTO BROWSER =========== "
   puts
-  puts "./yab add [url]    ... add bookmarks"
-  puts "./yab list  ...show current bookmarks"
-  puts "./yab play  ... play the first of the bookmark list (then the link"
+  puts "yab add [url]    ... add bookmarks"
+  puts "yab list  ...show current bookmarks"
+  puts "yab play  ... play the first of the bookmark list (then the link"
   puts "                played located at the last of the entire stack"
+  puts "yab push [key] [url]  ... add [key][value] type bookmarks (not random)"
+  puts "yab pick [key] .. obtain the url related to the key you registered"
 when "add"
   f = File.open(getFile("add"), "a")
   f.puts ARGV[1]
   f.close
+when "altkey"
+  #yab altkey [oldkey] [newkey]
+  oldkey = ARGV[1]
+  newkey = ARGV[2]
+  file = "#{$rscroot}/#{$stack}"
+  arr = file_to_array file
+  f = File.open(getFile("push"), "w")
+  arr.each { |line|
+    linesp = line.strip.chomp.split(' ')
+    if linesp[0] == oldkey
+      puts "oldkey #{oldkey} is here"
+      f.puts "#{newkey} #{linesp[1]}"
+    else
+      f.puts line
+    end
+  }
+  f.close
+when "push"
+  f = File.open(getFile("push"), "a")
+  if ARGV.size < 3
+    abort "yab push [key] [value]"
+  end
+  f.puts "#{ARGV[1]} #{ARGV[2]}"
+  f.close
+when "listkeys"
+  file = "#{$rscroot}/#{$stack}"
+  arr = file_to_array file
+  puts "---keys---"
+  arr.each { |line|
+    linesp = line.strip.chomp.split(' ')
+    puts linesp[0]
+  }
+  puts "------"
 when "list"
   op = getOp
   enlist(op)
+when "pick"
+if ARGV.size < 2
+ abort "argument is not sufficiently provided."
+end
+key = ARGV[1]
+file = "#{$rscroot}/#{$stack}"
+lines = file_to_array file
+lines.each{ |line|
+  linesp = line.strip.chomp.split(' ')
+  if linesp[0] == key
+    Launchy.open(linesp[1])
+  end
+}
 when "play"
   file = getFile("play")
-  lines = File.open(file, "r").each_line.to_a
-  require 'launchy'
-	Launchy.open(lines[0].strip)
+  lines = file_to_array file
+  Launchy.open(lines[0].strip)
   f = File.open(file, "w")
   lines[1..-1].push(lines[0]).each { |l|
     f.puts l
   }
   f.close
 when "select"
-	file = "#{$rscroot}/#{ARGV[1]}"
-	arr = File.open(file, "r").each_line.to_a
-	i = ARGV[2].to_i
-	require 'launchy'
-	Launchy.open(arr[i].strip)
+  file = "#{$rscroot}/#{ARGV[1]}"
+  arr = file_to_array file
+  i = ARGV[2].to_i
+  Launchy.open(arr[i].strip)
 end
 
 
