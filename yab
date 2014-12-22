@@ -2,15 +2,12 @@
 
 option = ARGV[0]
 
-rscroot = "/usr/local/yab/resource"
+$rscroot = "/usr/local/yab/resource"
 
 require 'fileutils'
-FileUtils.mkdir_p rscroot
+FileUtils.mkdir_p $rscroot
 
-
-
-
-LIST = "#{rscroot}/list"
+LIST = "#{$rscroot}/list"
 
 def enlist(file)
 	File.open(file, "r").each_line { |l|
@@ -27,7 +24,7 @@ def getFile(op)
   end
 	file = LIST
   if ARGV.size > i
-  file = "#{rscroot}/"+ARGV[i]
+  file = "#{$rscroot}/"+ARGV[i]
   end
   if (File.file?(file) == false)
    f = File.new file, "w"
@@ -37,9 +34,9 @@ def getFile(op)
 end
 
 def getOp()
-	op = "#{rscroot}/list"
+	op = "#{$rscroot}/list"
 	if ARGV.size > 1
-		op = "#{rscroot}/#{ARGV[1]}"
+		op = "#{$rscroot}/#{ARGV[1]}"
 	end
   op
 end
@@ -70,7 +67,7 @@ when "play"
   }
   f.close
 when "select"
-	file = "#{rscroot}/#{ARGV[1]}"
+	file = "#{$rscroot}/#{ARGV[1]}"
 	arr = File.open(file, "r").each_line.to_a
 	i = ARGV[2].to_i
 	require 'launchy'
