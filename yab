@@ -1,9 +1,16 @@
 #!/usr/bin/env ruby
 
-
 option = ARGV[0]
 
-LIST = "resource/list"
+rscroot = "/usr/local/yab/resource"
+
+require 'fileutils'
+FileUtils.mkdir_p rscroot
+
+
+
+
+LIST = "#{rscroot}/list"
 
 def enlist(file)
 	File.open(file, "r").each_line { |l|
@@ -13,15 +20,14 @@ end
 
 def getFile(op)
   i = 1
-  puts op
   case op
   when "add"
     i = 2
   when "play"
   end
 	file = LIST
-  if ARGV.size > i 
-  file = "resource/"+ARGV[i]
+  if ARGV.size > i
+  file = "#{rscroot}/"+ARGV[i]
   end
   if (File.file?(file) == false)
    f = File.new file, "w"
@@ -31,9 +37,9 @@ def getFile(op)
 end
 
 def getOp()
-	op = "resource/list"
-	if ARGV.size > 1 
-		op = "resource/#{ARGV[1]}"
+	op = "#{rscroot}/list"
+	if ARGV.size > 1
+		op = "#{rscroot}/#{ARGV[1]}"
 	end
   op
 end
@@ -41,39 +47,35 @@ end
 case option
 when "-h"
   puts "========== YOUR AUTO BROWSER =========== "
-  puts 
+  puts
   puts "./yab add [url]    ... add bookmarks"
   puts "./yab list  ...show current bookmarks"
   puts "./yab play  ... play the first of the bookmark list (then the link"
   puts "                played located at the last of the entire stack"
-when "add"  
+when "add"
   f = File.open(getFile("add"), "a")
   f.puts ARGV[1]
   f.close
 when "list"
-  #op = "resource/list"
-  #if ARGV.size > 1 
-  #  op = "resource/#{ARGV[1]}"
-  #end
   op = getOp
   enlist(op)
 when "play"
   file = getFile("play")
-  lines = File.open(file, "r").each_line.to_a 
+  lines = File.open(file, "r").each_line.to_a
   require 'launchy'
-	Launchy.open(lines[0].strip) 
+	Launchy.open(lines[0].strip)
   f = File.open(file, "w")
-  lines[1..-1].push(lines[0]).each { |l| 
+  lines[1..-1].push(lines[0]).each { |l|
     f.puts l
-  } 
+  }
   f.close
 when "select"
-	file = "resource/#{ARGV[1]}"
-	arr = File.open(file, "r").each_line.to_a 
+	file = "#{rscroot}/#{ARGV[1]}"
+	arr = File.open(file, "r").each_line.to_a
 	i = ARGV[2].to_i
 	require 'launchy'
-	Launchy.open(arr[i].strip) 
+	Launchy.open(arr[i].strip)
 end
- 
+
 
 
