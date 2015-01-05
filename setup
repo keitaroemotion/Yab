@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+src = "yab"
+dest = "/usr/local/bin/yab"
+FileUtils.copy_file(src, dest)
