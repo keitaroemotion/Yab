@@ -25,6 +25,9 @@ def file_to_array(file)
     arr
 end
 
+
+
+
 def getFile(op)
   file = LIST
   i = 1
@@ -85,6 +88,30 @@ when "altkey"
     else
       f.puts line
     end
+  }
+  f.close
+when "mod"  #modify the hyperlink's index key
+  oldkey = ARGV[1]
+  newkey = ARGV[2]
+  if ARGV.size < 3
+    abort "arg size insufficient"
+  end
+
+  arr = Array.new
+
+  File.open(getFile("push"), "r").each_line do |line|
+    line_scindo = line.split(' ')
+    traho_key = line_scindo[0]
+    traho_value = line_scindo[1]
+    if traho_key == oldkey
+       traho_key = newkey
+    end
+    arr.push traho_key+" "+traho_value
+  end
+
+  f = File.open(getFile("push"), "w")
+  arr.each {|x|
+    f.puts x
   }
   f.close
 when "push"
