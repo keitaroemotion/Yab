@@ -61,10 +61,11 @@ when "-h"
   puts
   puts "yab add [url]    ... add bookmarks"
   puts "yab list  ...show current bookmarks"
+  puts "yab lk  ... enlist possible hyperlinks "
   puts "yab play  ... play the first of the bookmark list (then the link"
   puts "                played located at the last of the entire stack"
   puts "yab push [key] [url]  ... add [key][value] type bookmarks (not random)"
-  puts "yab pick [key] .. obtain the url related to the key you registered"
+  puts "yab call [key] .. obtain the url related to the key you registered"
 when "add"
   f = File.open(getFile("add"), "a")
   f.puts ARGV[1]
@@ -93,7 +94,7 @@ when "push"
   end
   f.puts "#{ARGV[1]} #{ARGV[2]}"
   f.close
-when "listkeys"
+when "lk"
   file = "#{$rscroot}/#{$stack}"
   arr = file_to_array file
   puts "---keys---"
@@ -105,7 +106,7 @@ when "listkeys"
 when "list"
   op = getOp
   enlist(op)
-when "pick"
+when "call"
 if ARGV.size < 2
  abort "argument is not sufficiently provided."
 end
